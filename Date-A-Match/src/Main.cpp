@@ -1,8 +1,10 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sstream>
 #include <csv2/reader.hpp>
+#include "Person.h"
 
 int main()
 {
@@ -10,29 +12,58 @@ int main()
 		csv2::quote_character<'"'>,
 		csv2::first_row_is_header<true>,
 		csv2::trim_policy::trim_whitespace> csv_R;
-	std::string temp;
-	if (csv_R.mmap("test_01.csv"))
+	std::vector<Person> persons;
+
+	// load csv data into persons
 	{
-		auto csvHead = csv_R.header();
-		for (auto c : csvHead)
+		std::vector<std::string> rowStrs;
+		// load the rows as raw comma seperated strings into rowStrs
+		if (csv_R.mmap("Date-Match-Test.csv"))
 		{
-			temp.erase(temp.begin(), temp.end());
-			c.read_value(temp);
-			std::cout << temp;
-		}
-		std::cout << std::endl;
-		for (auto row : csv_R)
-		{
-			for (auto cell : row)
+			for (auto row : csv_R)
 			{
-				temp.erase(temp.begin(), temp.end());
-				cell.read_value(temp);
-				std::cout << temp;
+				std::string temp;
+				row.read_raw_value(temp);
+				rowStrs.push_back(temp);
 			}
-			std::cout << std::endl;
+		}
+
+		for (size_t i = 0; i < rowStrs.size(); ++i)
+		{
+			std::replace(rowStrs[i].begin(), rowStrs[i].end(), ',', ' ');
+		}
+
+		// we don't really care about the header(attribute names)
+		// the csv we're using should have attributes as follows:
+		// 'name' 'qq' 'phonenumber' 'GenderVal' 'attribute'*53
+		for (size_t i = 0; i < rowStrs.size(); ++i)
+		{
+			std::string name;
+			std::string qq;
+			std::string phoneNumber;
+			std::string tempValStr;
+			std::vector<int> attributes;
+			std::stringstream ss(rowStrs[i]);
+			std::string genderValStr;
+			ss >> name;
+			ss >> qq;
+			ss >> phoneNumber;
+			ss >> genderValStr;
+			for (size_t i = 0; i < 53; ++i)
+			{
+				ss >> tempValStr;
+				attributes.push_back(std::stoi(tempValStr));
+			}
+			persons.emplace_back(name, qq, phoneNumber, attributes, std::stoi(genderValStr));
 		}
 	}
-	std::cout << "Hello world!" << std::endl;
+
+	// test the loading results:
+	for (auto p : persons)
+	{
+		p.Print();
+	}
+
 	std::cin.get();
 	return 0;
 }
