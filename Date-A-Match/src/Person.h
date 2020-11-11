@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cassert>
+#include <cmath>
 #include <iostream>
 
 enum class Gender
@@ -11,7 +12,7 @@ enum class Gender
 	Count
 };
 
-class Person
+struct Person
 {
 public:
 	Person(const std::string& name,
@@ -27,7 +28,7 @@ public:
 		gender(genderVal == 1 ? Gender::Male : Gender::Female)
 	{
 	}
-	void Print()
+	void Print() const
 	{
 		std::cout << "姓名：" << name << " QQ: " << qq << " phone: " << phoneNumber << " Attrbutes: ";
 		std::cout << " 性别： " << (gender == Gender::Male ? "男 " : "女 ");
@@ -37,7 +38,27 @@ public:
 		}
 		std::cout<<std::endl;
 	}
-private:
+	float DesireDistance(const Person& another) const
+	{
+		float result = 0.0f;
+		for (size_t i = 0; i < 53; ++i)
+		{
+			result += pow(attributes[i] - another.attributes[i], 2);
+		}
+		result = sqrt(result);
+		return result;
+	}
+	bool IsMale()const
+	{
+		return gender == Gender::Male;
+	}
+	bool operator==(const Person& rhs)const
+	{
+		return name == rhs.name &&
+			qq == rhs.qq &&
+			phoneNumber == rhs.phoneNumber &&
+			gender == rhs.gender;
+	}
 	std::string name;
 	std::string qq;
 	std::string phoneNumber;

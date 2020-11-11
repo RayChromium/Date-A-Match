@@ -4,7 +4,9 @@
 #include <vector>
 #include <sstream>
 #include <csv2/reader.hpp>
+#include <csv2/writer.hpp>
 #include "Person.h"
+#include "Match.h"
 
 int main()
 {
@@ -20,6 +22,7 @@ int main()
 		// load the rows as raw comma seperated strings into rowStrs
 		if (csv_R.mmap("Date-Match-Test.csv"))
 		{
+			std::cout << "Loading src data \n";
 			for (auto row : csv_R)
 			{
 				std::string temp;
@@ -28,10 +31,14 @@ int main()
 			}
 		}
 
+		std::cout << "Replacing commas with space\n";
+
 		for (size_t i = 0; i < rowStrs.size(); ++i)
 		{
 			std::replace(rowStrs[i].begin(), rowStrs[i].end(), ',', ' ');
 		}
+
+		std::cout << "Extracting src data\n";
 
 		// we don't really care about the header(attribute names)
 		// the csv we're using should have attributes as follows:
@@ -58,12 +65,38 @@ int main()
 		}
 	}
 
-	// test the loading results:
-	for (auto p : persons)
-	{
-		p.Print();
-	}
+	std::vector<std::pair<std::pair<Person, Person>, float>> result = Male2FemaleDisireDistances(persons);
 
+	// write the result to a csv output file:
+	{
+		std::ofstream matchResultOfstream("match_result.csv");
+		csv2::Writer<csv2::delimiter<','>> csvWriter(matchResultOfstream);
+		size_t total = result.size() * 2;
+		std::vector<std::vector<std::string>> outputRows;
+		for (size_t i = 0, num = 1; i < result.size() && num <= total; ++i)
+		{
+			std::vector<std::string> row;
+			// every row contains info from male & female
+			// with numbers attached
+			row.push_back(std::to_string(num));
+			num++;
+			row.push_back(result[i].first.first.name);
+			row.push_back(result[i].first.first.qq);
+			row.push_back(result[i].first.first.phoneNumber);
+			row.push_back(result[i].first.first.gender == Gender::Male ? "M" : "F");
+			row.push_back(std::to_string(num));
+			num++;
+			row.push_back(result[i].first.second.name);
+			row.push_back(result[i].first.second.qq);
+			row.push_back(result[i].first.second.phoneNumber);
+			row.push_back(result[i].first.second.gender == Gender::Male ? "M" : "F");
+			outputRows.push_back(row);
+		}
+		std::cout << "Ready to write output\n";
+		csvWriter.write_rows(outputRows);
+		std::cout << "Output written\n";
+	}
+	std::cout << "Done!"<<std::endl;
 	std::cin.get();
 	return 0;
 }
