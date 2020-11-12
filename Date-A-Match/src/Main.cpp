@@ -32,35 +32,35 @@ int main()
 			}
 		}
 
-		// so...need to delete those who quit before sign up deadline
-		// load a quit list:
-		std::set<std::string> quitList;
-		{
-			csv2::Reader<csv2::delimiter<','>,
-				csv2::quote_character<'"'>,
-				csv2::first_row_is_header<true>,
-				csv2::trim_policy::trim_whitespace> quitCsvReader;
-			if (quitCsvReader.mmap("Quit-List.csv"))
-			{
-				std::cout << "Loading quit list data ... \n";
-				for (auto row : quitCsvReader)
-				{
-					for (auto cell : row)
-					{
-						std::string temp;
-						cell.read_value(temp);
-						quitList.insert(temp);
-					}
-				}
-			}
-		}
+		//// so...need to delete those who quit before sign up deadline
+		//// load a quit list:
+		//std::set<std::string> quitList;
+		//{
+		//	csv2::Reader<csv2::delimiter<','>,
+		//		csv2::quote_character<'"'>,
+		//		csv2::first_row_is_header<true>,
+		//		csv2::trim_policy::trim_whitespace> quitCsvReader;
+		//	if (quitCsvReader.mmap("Quit-List.csv"))
+		//	{
+		//		std::cout << "Loading quit list data ... \n";
+		//		for (auto row : quitCsvReader)
+		//		{
+		//			for (auto cell : row)
+		//			{
+		//				std::string temp;
+		//				cell.read_value(temp);
+		//				quitList.insert(temp);
+		//			}
+		//		}
+		//	}
+		//}
 
-		// delete the quiters from persons:
-		std::cout << " Deleting quit members from the person vector ... ";
-		std::remove_if(persons.begin(), persons.end(), [&quitList](const Person& p)
-			{
-				return quitList.find(p.name) != quitList.end();
-			});
+		//// delete the quiters from persons:
+		//std::cout << " Deleting quit members from the person vector ... ";
+		//std::remove_if(persons.begin(), persons.end(), [&quitList](const Person& p)
+		//	{
+		//		return quitList.find(p.name) != quitList.end();
+		//	});
 
 		std::cout << "Replacing commas with space ... \n";
 
