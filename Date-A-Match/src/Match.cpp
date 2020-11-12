@@ -7,7 +7,7 @@ Male2FemaleDisireDistances(std::vector<Person> persons)
 	// divide persons into a male and female vector:
 	std::vector<Person> males;
 	std::vector<Person> females;
-	std::cout << "Diciding src data by gender\n";
+	std::cout << "Dividing src data by gender .. \n";
 	std::copy_if(persons.begin(), persons.end(), std::back_inserter(males),
 		[](const Person& p)
 		{
@@ -19,7 +19,7 @@ Male2FemaleDisireDistances(std::vector<Person> persons)
 			return !p.IsMale();
 		});
 
-	std::cout << "Calculating desire distance\n";
+	std::cout << "Calculating desire distance ... \n";
 	// calculate the "desire distance" and push into the result container
 	std::vector<std::pair<std::pair<Person, Person>, float>> result;
 	for (size_t i = 0; i < males.size(); ++i)
@@ -31,7 +31,7 @@ Male2FemaleDisireDistances(std::vector<Person> persons)
 		}
 	}
 
-	std::cout << "Sorting couples\n";
+	std::cout << "Sorting couples ... \n";
 	// sort the pairs in result by the desire distance in ascending order:
 	// the desire distance should be as small as posible
 	std::sort(result.begin(), result.end(),
@@ -41,7 +41,7 @@ Male2FemaleDisireDistances(std::vector<Person> persons)
 			return c1.second < c2.second;
 		});
 
-	std::cout << "Removing duplicated match results\n";
+	std::cout << "Removing duplicated match results ... \n";
 	// remove the couples whose desire distance is smaller and its candidate had been matched:
 	for (size_t i = 0; i < result.size(); ++i)
 	{
