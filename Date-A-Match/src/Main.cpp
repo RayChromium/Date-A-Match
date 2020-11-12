@@ -73,6 +73,8 @@ int main()
 		csv2::Writer<csv2::delimiter<','>> csvWriter(matchResultOfstream);
 		size_t total = result.size() * 2;
 		std::vector<std::vector<std::string>> outputRows;
+		std::vector<std::string> header{ "No.", "Name","QQ","Phone","No.","Gender", "Name","QQ","Phone","Gender", "Desire Distance" };
+		csvWriter.write_row(header);
 		for (size_t i = 0, num = 1; i < result.size() && num <= total; ++i)
 		{
 			std::vector<std::string> row;
@@ -90,6 +92,7 @@ int main()
 			row.push_back(result[i].first.second.qq);
 			row.push_back(result[i].first.second.phoneNumber);
 			row.push_back(result[i].first.second.gender == Gender::Male ? "M" : "F");
+			row.push_back(std::to_string(result[i].second));
 			outputRows.push_back(row);
 		}
 		std::cout << "Ready to write output\n";
