@@ -21,7 +21,7 @@ int main()
 	{
 		std::vector<std::string> rowStrs;
 		// load the rows as raw comma seperated strings into rowStrs
-		if (csv_R.mmap("Date-Match-Test.csv"))
+		if (csv_R.mmap("Date-A-Match-SRC.csv"))
 		{
 			std::cout << "Loading src data ...  \n";
 			for (auto row : csv_R)
@@ -100,7 +100,7 @@ int main()
 
 	// write the result to a csv output file:
 	{
-		std::ofstream matchResultOfstream("match_result.csv");
+		std::ofstream matchResultOfstream("Date-A-Match-SRC-Result.csv");
 		csv2::Writer<csv2::delimiter<','>> csvWriter(matchResultOfstream);
 		size_t total = result.size() * 2;
 		std::vector<std::vector<std::string>> outputRows;
